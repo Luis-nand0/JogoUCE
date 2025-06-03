@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="45" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="25">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="45" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="30">
  <editorsettings>
   <export target="primeira_fase.lua" format="lua"/>
  </editorsettings>
+ <tileset firstgid="1" name="Tilesset-chao" tilewidth="32" tileheight="32" tilecount="96" columns="12">
+  <image source="craftpix-net-846754-free-green-zone-tileset-pixel-art/Tileset.png" width="384" height="256"/>
+ </tileset>
  <layer id="1" name="floor" width="45" height="25">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -25,9 +28,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+1,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,
+13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
@@ -53,69 +56,65 @@
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="13" x="3" y="429" width="338" height="76">
+  <object id="15" x="355.667" y="291.333" width="350" height="66">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="15" x="447" y="336" width="338" height="76">
+  <object id="17" x="1113" y="160" width="338" height="72">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="16" x="3" y="244" width="268" height="76">
+  <object id="22" x="1121" y="488" width="324" height="62">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="17" x="1093" y="124" width="338" height="76">
+  <object id="23" x="735" y="222" width="326" height="64">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="21" x="1101" y="326" width="338" height="76">
+  <object id="27" x="254.667" y="352" width="64" height="66.6667">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="22" x="1103" y="512" width="338" height="76">
-   <properties>
-    <property name="collidable" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="23" x="787" y="222" width="338" height="76">
-   <properties>
-    <property name="collidable" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="24" x="275" y="542" width="338" height="76">
+  <object id="29" x="1.33333" y="506.667" width="312" height="64">
    <properties>
     <property name="collidable" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="3" name="pontos">
-  <object id="2" name="points" x="460" y="256" width="84" height="60">
+  <object id="2" name="points" x="484" y="240" width="72" height="48">
    <properties>
     <property name="isPoint" type="bool" value="true"/>
     <property name="valor" type="int" value="50"/>
    </properties>
   </object>
-  <object id="8" name="points" x="1152" y="446" width="84" height="60">
+  <object id="8" name="points" x="1258" y="406" width="84" height="60">
    <properties>
     <property name="isPoint" type="bool" value="true"/>
     <property name="valor" type="int" value="50"/>
+   </properties>
+  </object>
+  <object id="28" name="points" x="1268" y="570" width="84" height="60">
+   <properties>
+    <property name="isPoint" type="bool" value="true"/>
+    <property name="valor" type="int" value="25"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="4" name="exits">
-  <object id="4" name="saida" x="1190" y="-100" width="172" height="232">
+  <object id="4" name="saida" x="1280" y="28" width="108" height="136">
    <properties>
     <property name="isExit" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="5" name="spawn">
-  <object id="5" name="playerSpawn" x="74" y="554" width="96" height="66"/>
+  <object id="5" name="playerSpawn" x="876.667" y="559.333" width="96" height="66"/>
  </objectgroup>
 </map>

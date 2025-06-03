@@ -86,7 +86,7 @@ function fase.update(dt)
                player.y < exit.y + exit.h and
                player.y + player.h > exit.y then
 
-                require("main").mudarFase("primeira_fase")
+                require("main").mudarFase("terceira_fase")
                 return
             end
         end

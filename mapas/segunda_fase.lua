@@ -10,7 +10,7 @@ return {
   tilewidth = 32,
   tileheight = 32,
   nextlayerid = 6,
-  nextobjectid = 21,
+  nextobjectid = 33,
   properties = {},
   tilesets = {},
   layers = {
@@ -138,10 +138,10 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = -3,
-          y = 455,
-          width = 338,
-          height = 76,
+          x = -13.5999,
+          y = 126.402,
+          width = 330.933,
+          height = 65.4001,
           rotation = 0,
           visible = true,
           properties = {
@@ -153,10 +153,10 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 447,
-          y = 336,
-          width = 338,
-          height = 76,
+          x = -5.26353,
+          y = 321.867,
+          width = 327.4,
+          height = 58.3335,
           rotation = 0,
           visible = true,
           properties = {
@@ -164,14 +164,14 @@ return {
           }
         },
         {
-          id = 16,
+          id = 21,
           name = "",
           type = "",
           shape = "rectangle",
-          x = 3,
-          y = 244,
-          width = 384,
-          height = 76,
+          x = 2.36551,
+          y = 511.429,
+          width = 316.8,
+          height = 58.3335,
           rotation = 0,
           visible = true,
           properties = {
@@ -179,14 +179,119 @@ return {
           }
         },
         {
-          id = 17,
+          id = 22,
           name = "",
           type = "",
           shape = "rectangle",
-          x = 1093,
-          y = 124,
-          width = 338,
-          height = 76,
+          x = 1104.12,
+          y = 126.351,
+          width = 330.933,
+          height = 65.4001,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 23,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1112.46,
+          y = 321.816,
+          width = 327.4,
+          height = 58.3335,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 24,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1120.09,
+          y = 511.378,
+          width = 316.8,
+          height = 58.3335,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 28,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 412.229,
+          y = 414.264,
+          width = 62.4018,
+          height = 68.9334,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 29,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 417.529,
+          y = 221.698,
+          width = 62.4018,
+          height = 65.4001,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 30,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 960.222,
+          y = 414.371,
+          width = 59.9061,
+          height = 66.1764,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 31,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 962.059,
+          y = 222.581,
+          width = 59.9061,
+          height = 62.7844,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["collidable"] = true
+          }
+        },
+        {
+          id = 32,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 572.995,
+          y = 218.165,
+          width = 285,
+          height = 58.3335,
           rotation = 0,
           visible = true,
           properties = {
@@ -214,15 +319,15 @@ return {
           name = "points",
           type = "",
           shape = "rectangle",
-          x = 438,
-          y = 548,
+          x = 28.1362,
+          y = 424.334,
           width = 84,
           height = 60,
           rotation = 0,
           visible = true,
           properties = {
             ["isPoint"] = true,
-            ["valor"] = 50
+            ["valor"] = 40
           }
         },
         {
@@ -230,8 +335,24 @@ return {
           name = "points",
           type = "",
           shape = "rectangle",
-          x = 668,
-          y = 546,
+          x = 1321.66,
+          y = 422.334,
+          width = 84,
+          height = 60,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["isPoint"] = true,
+            ["valor"] = 10
+          }
+        },
+        {
+          id = 8,
+          name = "points",
+          type = "",
+          shape = "rectangle",
+          x = 24.9378,
+          y = 228.002,
           width = 84,
           height = 60,
           rotation = 0,
@@ -242,12 +363,44 @@ return {
           }
         },
         {
-          id = 8,
+          id = 25,
           name = "points",
           type = "",
           shape = "rectangle",
-          x = 668,
-          y = 546,
+          x = 1318.32,
+          y = 229.698,
+          width = 84,
+          height = 60,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["isPoint"] = true,
+            ["valor"] = 75
+          }
+        },
+        {
+          id = 26,
+          name = "points",
+          type = "",
+          shape = "rectangle",
+          x = 28.6662,
+          y = 53.0328,
+          width = 84,
+          height = 60,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["isPoint"] = true,
+            ["valor"] = 90
+          }
+        },
+        {
+          id = 27,
+          name = "points",
+          type = "",
+          shape = "rectangle",
+          x = 1314.79,
+          y = 31.8329,
           width = 84,
           height = 60,
           rotation = 0,
@@ -278,59 +431,14 @@ return {
           name = "saida",
           type = "",
           shape = "rectangle",
-          x = 1190,
-          y = -100,
-          width = 172,
-          height = 232,
+          x = 667.07,
+          y = 73.1321,
+          width = 101.334,
+          height = 143.667,
           rotation = 0,
           visible = true,
           properties = {
             ["isExit"] = true
-          }
-        },
-        {
-          id = 18,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 1115,
-          y = 494,
-          width = 338,
-          height = 76,
-          rotation = 0,
-          visible = true,
-          properties = {
-            ["collidable"] = true
-          }
-        },
-        {
-          id = 19,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 409,
-          y = 80,
-          width = 338,
-          height = 76,
-          rotation = 0,
-          visible = true,
-          properties = {
-            ["collidable"] = true
-          }
-        },
-        {
-          id = 20,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 805,
-          y = 234,
-          width = 338,
-          height = 76,
-          rotation = 0,
-          visible = true,
-          properties = {
-            ["collidable"] = true
           }
         }
       }
@@ -354,7 +462,7 @@ return {
           name = "playerSpawn",
           type = "",
           shape = "rectangle",
-          x = 74,
+          x = 667.596,
           y = 544,
           width = 96,
           height = 66,
