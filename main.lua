@@ -2,8 +2,9 @@ local primeira_fase = require("primeira_fase")
 local segunda_fase = require("segunda_fase")
 local terceira_fase = require("terceira_fase")
 local quarta_fase = require("quarta_fase")
+local menu = require("menu")
 
-local faseAtual = primeira_fase
+local faseAtual = menu -- Começa no menu
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -20,10 +21,34 @@ end
 
 function love.keypressed(key)
     if key == "escape" then
-        love.event.quit()
+        -- Se não estiver no menu, volta para o menu
+        if faseAtual ~= menu then
+            faseAtual = menu
+            faseAtual.load()
+        else
+            love.event.quit()
+        end
     end
 
     faseAtual.keypressed(key)
+end
+
+function love.textinput(t)
+    if faseAtual.textinput then
+        faseAtual.textinput(t)
+    end
+end
+
+function love.mousepressed(x, y, button)
+    if faseAtual.mousepressed then
+        faseAtual.mousepressed(x, y, button)
+    end
+end
+
+function love.mousereleased(x, y, button)
+    if faseAtual.mousereleased then
+        faseAtual.mousereleased(x, y, button)
+    end
 end
 
 -- Função para trocar de fase
@@ -36,6 +61,8 @@ function mudarFase(nome)
         faseAtual = terceira_fase
     elseif nome == "quarta_fase" then
         faseAtual = quarta_fase
+    elseif nome == "menu" then
+        faseAtual = menu
     else
         print("Fase desconhecida: " .. tostring(nome))
         return
