@@ -31,12 +31,45 @@ function fase.load()
         end
     end
 
-    -- Pontos coletáveis
+    -- Criar nova conta aleatória
+    conta = Conta.nova()
+    local valor1 = conta.operandos[1]
+    local valor2 = conta.operandos[2]
+
+    -- Pegar pontos do mapa e embaralhar
+    local pontosMapa = {}
     for _, obj in ipairs(fase.map.layers["pontos"].objects) do
         if obj.properties.isPoint then
-            local c = Coletavel.new(obj.x, obj.y, obj.width, obj.height, obj.properties.valor)
-            table.insert(fase.pontos, c)
+            table.insert(pontosMapa, obj)
         end
+    end
+
+    -- Embaralhar os objetos do mapa
+    for i = #pontosMapa, 2, -1 do
+        local j = love.math.random(1, i)
+        pontosMapa[i], pontosMapa[j] = pontosMapa[j], pontosMapa[i]
+    end
+
+    -- Definir valores: 2 corretos + o restante como valores errados
+    local usados = {}
+    usados[valor1] = true
+    usados[valor2] = true
+
+    local valores = { valor1, valor2 }
+
+    while #valores < #pontosMapa do
+        local aleatorio = love.math.random(1, 20)
+        if not usados[aleatorio] then
+            usados[aleatorio] = true
+            table.insert(valores, aleatorio)
+        end
+    end
+
+    -- Criar coletáveis com os valores definidos
+    for i, obj in ipairs(pontosMapa) do
+        local valor = valores[i]
+        local c = Coletavel.new(obj.x, obj.y, obj.width, obj.height, valor)
+        table.insert(fase.pontos, c)
     end
 
     -- Saídas
@@ -56,10 +89,8 @@ function fase.load()
     local mapHeight = fase.map.height * fase.map.tileheight
     local screenWidth, screenHeight = love.graphics.getDimensions()
     utils.initCamera(mapWidth, mapHeight, screenWidth, screenHeight)
-
-    -- Meta da conta
-    conta = Conta.nova(100)
 end
+
 
 function fase.update(dt)
     fase.map:update(dt)

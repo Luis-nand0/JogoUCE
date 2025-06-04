@@ -1,11 +1,33 @@
 local conta = {}
 
-function conta.nova(alvo)
+function conta.nova()
     local self = {
-        alvo = alvo,
         coletados = {},
         completa = false
     }
+
+    -- Escolhe operador aleatório
+    local operadores = { "+", "-", "*" }
+    self.operador = operadores[love.math.random(1, #operadores)]
+
+    -- Gera operandos de acordo com o operador
+    local a, b
+    if self.operador == "+" then
+        a = love.math.random(1, 10)
+        b = love.math.random(1, 10)
+        self.alvo = a + b
+    elseif self.operador == "-" then
+        a = love.math.random(5, 15)
+        b = love.math.random(1, a)  -- garante que não seja negativo
+        self.alvo = a - b
+    elseif self.operador == "*" then
+        a = love.math.random(1, 5)
+        b = love.math.random(1, 5)
+        self.alvo = a * b
+    end
+
+    self.operandos = { a, b }
+
     setmetatable(self, { __index = conta })
     return self
 end
@@ -19,25 +41,15 @@ end
 
 function conta:verificar()
     if #self.coletados == 2 then
-        local soma = self.coletados[1] + self.coletados[2]
-        self.completa = soma == self.alvo
-    end
-end
-
-function conta:verificarSaida(player, exits)
-    if not self.completa then return end
-
-    for _, exit in ipairs(exits) do
-        local colidiu =
-            player.x + player.w > exit.x and
-            player.x < exit.x + exit.w and
-            player.y + player.h > exit.y and
-            player.y < exit.y + exit.h
-
-        if colidiu then
-            require("main").mudarFase("segunda_fase")
-            break
+        local resultado
+        if self.operador == "+" then
+            resultado = self.coletados[1] + self.coletados[2]
+        elseif self.operador == "-" then
+            resultado = self.coletados[1] - self.coletados[2]
+        elseif self.operador == "*" then
+            resultado = self.coletados[1] * self.coletados[2]
         end
+        self.completa = resultado == self.alvo
     end
 end
 
@@ -46,9 +58,13 @@ function conta:estaCorreta()
 end
 
 function conta:desenhar()
-    local texto = "_ + _ = " .. self.alvo
-    if self.coletados[1] then texto = self.coletados[1] .. " + _ = " .. self.alvo end
-    if self.coletados[2] then texto = self.coletados[1] .. " + " .. self.coletados[2] .. " = " .. self.alvo end
+    local texto = "_ " .. self.operador .. " _ = " .. self.alvo
+    if self.coletados[1] then
+        texto = self.coletados[1] .. " " .. self.operador .. " _ = " .. self.alvo
+    end
+    if self.coletados[2] then
+        texto = self.coletados[1] .. " " .. self.operador .. " " .. self.coletados[2] .. " = " .. self.alvo
+    end
 
     local larguraTela = love.graphics.getWidth()
     local fonte = love.graphics.getFont()

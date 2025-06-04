@@ -1,0 +1,8 @@
+{
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.diagnostics.globals": ["love"],
+  "Lua.workspace.library": [
+    "C:/Program Files/LOVE"
+  ],
+  "Lua.workspace.checkThirdParty": false
+}

@@ -8,6 +8,31 @@ local Coletavel = require("coletavel")
 local fase = {}
 local conta
 
+-- Função util para gerar valores únicos
+local function gerarValoresDistratores(qtd, corretos)
+    local distratores = {}
+    while #distratores < qtd do
+        local valor = love.math.random(1, 20)
+        local duplicado = false
+        for _, c in ipairs(corretos) do
+            if valor == c then
+                duplicado = true
+                break
+            end
+        end
+        for _, d in ipairs(distratores) do
+            if valor == d then
+                duplicado = true
+                break
+            end
+        end
+        if not duplicado then
+            table.insert(distratores, valor)
+        end
+    end
+    return distratores
+end
+
 function fase.load()
     fase.world = bump.newWorld(32)
     fase.map = sti("mapas/primeira_fase.lua", { "bump" })
@@ -31,11 +56,34 @@ function fase.load()
         end
     end
 
-    -- Pontos coletáveis
+    -- Criar a conta com operadores e valores
+    conta = Conta.nova()
+    local corretos = conta.operandos
+
+    -- Gerar valores distratores
+    local qtdTotal = #fase.map.layers["pontos"].objects
+    local qtdDistratores = math.max(0, qtdTotal - #corretos)
+    local distratores = gerarValoresDistratores(qtdDistratores, corretos)
+
+    -- Embaralhar os valores finais para sortear nos pontos
+    local todosValores = {}
+    for _, v in ipairs(corretos) do table.insert(todosValores, v) end
+    for _, v in ipairs(distratores) do table.insert(todosValores, v) end
+
+    -- Shuffle
+    for i = #todosValores, 2, -1 do
+        local j = love.math.random(i)
+        todosValores[i], todosValores[j] = todosValores[j], todosValores[i]
+    end
+
+    -- Criar os pontos com os valores embaralhados
+    local i = 1
     for _, obj in ipairs(fase.map.layers["pontos"].objects) do
-        if obj.properties.isPoint then
-            local c = Coletavel.new(obj.x, obj.y, obj.width, obj.height, obj.properties.valor)
+        if obj.properties.isPoint and i <= #todosValores then
+            local valor = todosValores[i]
+            local c = Coletavel.new(obj.x, obj.y, obj.width, obj.height, valor)
             table.insert(fase.pontos, c)
+            i = i + 1
         end
     end
 
@@ -56,9 +104,6 @@ function fase.load()
     local mapHeight = fase.map.height * fase.map.tileheight
     local screenWidth, screenHeight = love.graphics.getDimensions()
     utils.initCamera(mapWidth, mapHeight, screenWidth, screenHeight)
-
-    -- Meta da conta
-    conta = Conta.nova(100)
 end
 
 function fase.update(dt)
@@ -86,7 +131,6 @@ function fase.update(dt)
            player.y + player.h > exit.y then
 
             if conta:estaCorreta() then
-                -- Trocar para segunda fase
                 require("main").mudarFase("segunda_fase")
             end
         end
