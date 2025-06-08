@@ -8,6 +8,9 @@ local Coletavel = require("coletavel")
 local fase = {}
 local conta
 
+local spritePortaFechada = love.graphics.newImage("assets/porta_fechada.png")
+local spritePortaAberta = love.graphics.newImage("assets/porta_aberta.png")
+
 -- Função util para gerar valores únicos
 local function gerarValoresDistratores(qtd, corretos)
     local distratores = {}
@@ -34,6 +37,8 @@ local function gerarValoresDistratores(qtd, corretos)
 end
 
 function fase.load()
+    fase.background = love.graphics.newImage("mapas/fundo1.png")
+
     fase.world = bump.newWorld(32)
     fase.map = sti("mapas/primeira_fase.lua", { "bump" })
     fase.map:bump_init(fase.world)
@@ -65,18 +70,15 @@ function fase.load()
     local qtdDistratores = math.max(0, qtdTotal - #corretos)
     local distratores = gerarValoresDistratores(qtdDistratores, corretos)
 
-    -- Embaralhar os valores finais para sortear nos pontos
     local todosValores = {}
     for _, v in ipairs(corretos) do table.insert(todosValores, v) end
     for _, v in ipairs(distratores) do table.insert(todosValores, v) end
 
-    -- Shuffle
     for i = #todosValores, 2, -1 do
         local j = love.math.random(i)
         todosValores[i], todosValores[j] = todosValores[j], todosValores[i]
     end
 
-    -- Criar os pontos com os valores embaralhados
     local i = 1
     for _, obj in ipairs(fase.map.layers["pontos"].objects) do
         if obj.properties.isPoint and i <= #todosValores then
@@ -94,7 +96,7 @@ function fase.load()
                 x = obj.x,
                 y = obj.y,
                 w = obj.width,
-                h = obj.height
+                h = obj.height,
             })
         end
     end
@@ -140,23 +142,34 @@ end
 function fase.draw()
     utils.camera:attach()
 
+    -- Fundo
+    local bg = fase.background
+    local bgW, bgH = bg:getWidth(), bg:getHeight()
+    local mapW = fase.map.width * fase.map.tilewidth
+    local mapH = fase.map.height * fase.map.tileheight
+
+    for x = 0, mapW, bgW do
+        for y = 0, mapH, bgH do
+            love.graphics.draw(bg, x, y)
+        end
+    end
+
+    -- Camada de chão
     fase.map:drawLayer(fase.map.layers["floor"])
-    fase.map:drawLayer(fase.map.layers["walls"])
 
+    -- Jogador e pontos
     player.draw()
-
     for _, ponto in ipairs(fase.pontos) do
         ponto:draw()
     end
 
+    -- Saídas com sprites
     for _, exit in ipairs(fase.exits) do
-        love.graphics.setColor(0, 1, 0)
-        love.graphics.rectangle("line", exit.x, exit.y, exit.w, exit.h)
-        love.graphics.setColor(1, 1, 1)
+        local sprite = conta:estaCorreta() and spritePortaAberta or spritePortaFechada
+        love.graphics.draw(sprite, exit.x, exit.y)
     end
 
     utils.camera:detach()
-
     conta:desenhar()
 end
 

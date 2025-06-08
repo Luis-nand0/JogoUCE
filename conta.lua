@@ -1,16 +1,18 @@
 local conta = {}
 
+-- Carrega a fonte personalizada para a conta
+local fonteConta = love.graphics.newFont("fontes/SuperAdorable.ttf", 36)
+
 function conta.nova()
     local self = {
         coletados = {},
-        completa = false
+        completa = false,
+        erro = false
     }
 
-    -- Escolhe operador aleatório
     local operadores = { "+", "-", "*" }
     self.operador = operadores[love.math.random(1, #operadores)]
 
-    -- Gera operandos de acordo com o operador
     local a, b
     if self.operador == "+" then
         a = love.math.random(1, 10)
@@ -18,7 +20,7 @@ function conta.nova()
         self.alvo = a + b
     elseif self.operador == "-" then
         a = love.math.random(5, 15)
-        b = love.math.random(1, a)  -- garante que não seja negativo
+        b = love.math.random(1, a)
         self.alvo = a - b
     elseif self.operador == "*" then
         a = love.math.random(1, 5)
@@ -50,11 +52,16 @@ function conta:verificar()
             resultado = self.coletados[1] * self.coletados[2]
         end
         self.completa = resultado == self.alvo
+        self.erro = not self.completa
     end
 end
 
 function conta:estaCorreta()
     return self.completa
+end
+
+function conta:deuErro()
+    return self.erro
 end
 
 function conta:desenhar()
@@ -67,12 +74,26 @@ function conta:desenhar()
     end
 
     local larguraTela = love.graphics.getWidth()
-    local fonte = love.graphics.getFont()
-    local larguraTexto = fonte:getWidth(texto)
+
+    local fonteOriginal = love.graphics.getFont()
+    love.graphics.setFont(fonteConta)
+
+    local larguraTexto = fonteConta:getWidth(texto)
     local x = (larguraTela - larguraTexto) / 2
     local y = 20
 
     love.graphics.print(texto, x, y)
+
+    if self.erro then
+        local erroTexto = "Conta errada! Aperte R para reiniciar."
+        local larguraErro = fonteConta:getWidth(erroTexto)
+        local xErro = (larguraTela - larguraErro) / 2
+        love.graphics.setColor(1, 0.2, 0.2)
+        love.graphics.print(erroTexto, xErro, y + 40)
+        love.graphics.setColor(1, 1, 1)
+    end
+
+    love.graphics.setFont(fonteOriginal)
 end
 
 return conta

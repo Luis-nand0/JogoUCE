@@ -7,8 +7,14 @@ local Coletavel = require("coletavel")
 
 local fase = {}
 local conta
+local background
+
+local spritePortaFechada = love.graphics.newImage("assets/porta_fechada.png")
+local spritePortaAberta = love.graphics.newImage("assets/porta_aberta.png")
 
 function fase.load()
+    background = love.graphics.newImage("mapas/fundo4.png")
+
     fase.world = bump.newWorld(32)
     fase.map = sti("mapas/quarta_fase.lua", { "bump" })
     fase.map:bump_init(fase.world)
@@ -16,14 +22,12 @@ function fase.load()
     fase.exits = {}
     fase.pontos = {}
 
-    -- Colisões
     for _, obj in ipairs(fase.map.layers["walls"].objects) do
         if obj.properties.collidable then
             fase.world:add(obj, obj.x, obj.y, obj.width, obj.height)
         end
     end
 
-    -- Spawn do jogador
     for _, obj in ipairs(fase.map.layers["spawn"].objects) do
         if obj.name == "playerSpawn" then
             player.load(fase.world, obj.x, obj.y - player.h)
@@ -31,12 +35,10 @@ function fase.load()
         end
     end
 
-    -- Criar nova conta aleatória
     conta = Conta.nova()
     local valor1 = conta.operandos[1]
     local valor2 = conta.operandos[2]
 
-    -- Pegar pontos do mapa e embaralhar
     local pontosMapa = {}
     for _, obj in ipairs(fase.map.layers["pontos"].objects) do
         if obj.properties.isPoint then
@@ -44,13 +46,12 @@ function fase.load()
         end
     end
 
-    -- Embaralhar os objetos do mapa
+    -- Embaralha os pontos
     for i = #pontosMapa, 2, -1 do
         local j = love.math.random(1, i)
         pontosMapa[i], pontosMapa[j] = pontosMapa[j], pontosMapa[i]
     end
 
-    -- Definir valores: 2 corretos + o restante como valores errados
     local usados = {}
     usados[valor1] = true
     usados[valor2] = true
@@ -65,14 +66,12 @@ function fase.load()
         end
     end
 
-    -- Criar coletáveis com os valores definidos
     for i, obj in ipairs(pontosMapa) do
         local valor = valores[i]
         local c = Coletavel.new(obj.x, obj.y, obj.width, obj.height, valor)
         table.insert(fase.pontos, c)
     end
 
-    -- Saídas
     for _, obj in ipairs(fase.map.layers["exits"].objects) do
         if obj.properties.isExit then
             table.insert(fase.exits, {
@@ -84,19 +83,16 @@ function fase.load()
         end
     end
 
-    -- Câmera
     local mapWidth = fase.map.width * fase.map.tilewidth
     local mapHeight = fase.map.height * fase.map.tileheight
     local screenWidth, screenHeight = love.graphics.getDimensions()
     utils.initCamera(mapWidth, mapHeight, screenWidth, screenHeight)
 end
 
-
 function fase.update(dt)
     fase.map:update(dt)
     player.update(dt, fase.world)
 
-    -- Coletar pontos
     for _, ponto in ipairs(fase.pontos) do
         if not ponto.coletado and
            player.x < ponto.x + ponto.w and
@@ -109,7 +105,6 @@ function fase.update(dt)
         end
     end
 
-    -- Checar se player encostou na saída e conta está correta
     if conta.completa then
         for _, exit in ipairs(fase.exits) do
             if player.x < exit.x + exit.w and
@@ -117,7 +112,7 @@ function fase.update(dt)
                player.y < exit.y + exit.h and
                player.y + player.h > exit.y then
 
-                require("main").mudarFase("primeira_fase")
+                require("main").mudarFase("fase_final") -- ajuste o nome se for outro
                 return
             end
         end
@@ -127,23 +122,34 @@ end
 function fase.draw()
     utils.camera:attach()
 
+    -- Fundo
+    local bg = background  -- corrigido aqui
+    local bgW, bgH = bg:getWidth(), bg:getHeight()
+    local mapW = fase.map.width * fase.map.tilewidth
+    local mapH = fase.map.height * fase.map.tileheight
+
+    for x = 0, mapW, bgW do
+        for y = 0, mapH, bgH do
+            love.graphics.draw(bg, x, y)
+        end
+    end
+
+    -- Camada de chão
     fase.map:drawLayer(fase.map.layers["floor"])
-    fase.map:drawLayer(fase.map.layers["walls"])
 
+    -- Jogador e pontos
     player.draw()
-
     for _, ponto in ipairs(fase.pontos) do
         ponto:draw()
     end
 
+    -- Portas (saídas) com sprite aberto ou fechado conforme a conta
     for _, exit in ipairs(fase.exits) do
-        love.graphics.setColor(0, 1, 0)
-        love.graphics.rectangle("line", exit.x, exit.y, exit.w, exit.h)
-        love.graphics.setColor(1, 1, 1)
+        local sprite = conta:estaCorreta() and spritePortaAberta or spritePortaFechada
+        love.graphics.draw(sprite, exit.x, exit.y)
     end
 
     utils.camera:detach()
-
     conta:desenhar()
 end
 
