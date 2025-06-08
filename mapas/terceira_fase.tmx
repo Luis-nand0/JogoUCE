@@ -114,7 +114,7 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="exits">
-  <object id="4" name="saida" x="55.808" y="500.662" width="101.334" height="143.667">
+  <object id="4" name="saida" x="55.808" y="517.995" width="101.334" height="143.667">
    <properties>
     <property name="isExit" type="bool" value="true"/>
    </properties>

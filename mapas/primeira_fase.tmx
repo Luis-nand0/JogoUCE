@@ -108,7 +108,7 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="exits">
-  <object id="4" name="saida" x="1280" y="28" width="108" height="136">
+  <object id="4" name="saida" x="1280" y="33.3333" width="108" height="136">
    <properties>
     <property name="isExit" type="bool" value="true"/>
    </properties>
