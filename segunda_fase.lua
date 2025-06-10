@@ -39,6 +39,7 @@ function fase.load()
     conta = Conta.nova()
     local valor1 = conta.operandos[1]
     local valor2 = conta.operandos[2]
+    local resultado = conta:getResultado()
 
     local pontosMapa = {}
     for _, obj in ipairs(fase.map.layers["pontos"].objects) do
@@ -47,17 +48,21 @@ function fase.load()
         end
     end
 
+    -- Embaralhar os pontos do mapa
     for i = #pontosMapa, 2, -1 do
         local j = love.math.random(1, i)
         pontosMapa[i], pontosMapa[j] = pontosMapa[j], pontosMapa[i]
     end
 
+    -- Garantir que os operandos e o resultado estejam nos valores
     local usados = {}
     usados[valor1] = true
     usados[valor2] = true
+    usados[resultado] = true
 
-    local valores = { valor1, valor2 }
+    local valores = { valor1, valor2, resultado }
 
+    -- Preencher com distratores únicos
     while #valores < #pontosMapa do
         local aleatorio = love.math.random(1, 20)
         if not usados[aleatorio] then
@@ -65,6 +70,7 @@ function fase.load()
             table.insert(valores, aleatorio)
         end
     end
+
 
     for i, obj in ipairs(pontosMapa) do
         local valor = valores[i]
@@ -100,7 +106,7 @@ function fase.update(dt)
            player.y < ponto.y + ponto.h and
            player.y + player.h > ponto.y then
 
-            conta:adicionar(ponto.valor)
+            conta:adicionarResposta(ponto.valor)
             ponto.coletado = true
         end
     end

@@ -5,12 +5,12 @@ local fonteConta = love.graphics.newFont("fontes/SuperAdorable.ttf", 36)
 
 function conta.nova()
     local self = {
-        coletados = {},
+        respostaJogador = nil,
         completa = false,
         erro = false
     }
 
-    local operadores = { "+", "-", "*" }
+    local operadores = { "+", "-", "x" }
     self.operador = operadores[love.math.random(1, #operadores)]
 
     local a, b
@@ -22,7 +22,7 @@ function conta.nova()
         a = love.math.random(5, 15)
         b = love.math.random(1, a)
         self.alvo = a - b
-    elseif self.operador == "*" then
+    elseif self.operador == "x" then
         a = love.math.random(1, 5)
         b = love.math.random(1, 5)
         self.alvo = a * b
@@ -34,24 +34,14 @@ function conta.nova()
     return self
 end
 
-function conta:adicionar(valor)
-    if #self.coletados < 2 then
-        table.insert(self.coletados, valor)
-    end
+function conta:adicionarResposta(valor)
+    self.respostaJogador = valor
     self:verificar()
 end
 
 function conta:verificar()
-    if #self.coletados == 2 then
-        local resultado
-        if self.operador == "+" then
-            resultado = self.coletados[1] + self.coletados[2]
-        elseif self.operador == "-" then
-            resultado = self.coletados[1] - self.coletados[2]
-        elseif self.operador == "*" then
-            resultado = self.coletados[1] * self.coletados[2]
-        end
-        self.completa = resultado == self.alvo
+    if self.respostaJogador ~= nil then
+        self.completa = self.respostaJogador == self.alvo
         self.erro = not self.completa
     end
 end
@@ -65,13 +55,9 @@ function conta:deuErro()
 end
 
 function conta:desenhar()
-    local texto = "_ " .. self.operador .. " _ = " .. self.alvo
-    if self.coletados[1] then
-        texto = self.coletados[1] .. " " .. self.operador .. " _ = " .. self.alvo
-    end
-    if self.coletados[2] then
-        texto = self.coletados[1] .. " " .. self.operador .. " " .. self.coletados[2] .. " = " .. self.alvo
-    end
+    local a, b = self.operandos[1], self.operandos[2]
+    local resposta = self.respostaJogador or "?"
+    local texto = string.format("%d %s %d = %s", a, self.operador, b, resposta)
 
     local larguraTela = love.graphics.getWidth()
 
@@ -85,7 +71,7 @@ function conta:desenhar()
     love.graphics.print(texto, x, y)
 
     if self.erro then
-        local erroTexto = "Conta errada! Aperte R para reiniciar."
+        local erroTexto = "Resposta errada! Aperte R para reiniciar."
         local larguraErro = fonteConta:getWidth(erroTexto)
         local xErro = (larguraTela - larguraErro) / 2
         love.graphics.setColor(1, 0.2, 0.2)
@@ -95,5 +81,9 @@ function conta:desenhar()
 
     love.graphics.setFont(fonteOriginal)
 end
+function conta:getResultado()
+    return self.alvo
+end
+
 
 return conta

@@ -51,12 +51,14 @@ function fase.load()
         local j = love.math.random(1, i)
         pontosMapa[i], pontosMapa[j] = pontosMapa[j], pontosMapa[i]
     end
-
+    
+    local resultado = conta:getResultado()
     local usados = {}
     usados[valor1] = true
     usados[valor2] = true
+    usados[resultado] = true
 
-    local valores = { valor1, valor2 }
+    local valores = { valor1, valor2, resultado }
 
     while #valores < #pontosMapa do
         local aleatorio = love.math.random(1, 20)
@@ -100,7 +102,7 @@ function fase.update(dt)
            player.y < ponto.y + ponto.h and
            player.y + player.h > ponto.y then
 
-            conta:adicionar(ponto.valor)
+            conta:adicionarResposta(ponto.valor)
             ponto.coletado = true
         end
     end

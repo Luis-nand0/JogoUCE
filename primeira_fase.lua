@@ -61,24 +61,30 @@ function fase.load()
         end
     end
 
+        -- Criar a conta com operadores e valores
     -- Criar a conta com operadores e valores
     conta = Conta.nova()
-    local corretos = conta.operandos
+    local valorCorreto = conta:getResultado()
+    local corretos = { valorCorreto }
 
-    -- Gerar valores distratores
+    -- Gerar valores distratores (diferentes do resultado correto)
     local qtdTotal = #fase.map.layers["pontos"].objects
-    local qtdDistratores = math.max(0, qtdTotal - #corretos)
+    local qtdDistratores = math.max(0, qtdTotal - 1)
     local distratores = gerarValoresDistratores(qtdDistratores, corretos)
 
-    local todosValores = {}
-    for _, v in ipairs(corretos) do table.insert(todosValores, v) end
-    for _, v in ipairs(distratores) do table.insert(todosValores, v) end
+    -- Junta tudo para distribuir no mapa
+    local todosValores = { valorCorreto }
+    for _, v in ipairs(distratores) do
+        table.insert(todosValores, v)
+    end
 
+    -- Embaralha os valores
     for i = #todosValores, 2, -1 do
         local j = love.math.random(i)
         todosValores[i], todosValores[j] = todosValores[j], todosValores[i]
     end
 
+    -- Posiciona nos pontos definidos no mapa
     local i = 1
     for _, obj in ipairs(fase.map.layers["pontos"].objects) do
         if obj.properties.isPoint and i <= #todosValores then
@@ -120,7 +126,7 @@ function fase.update(dt)
            player.y < ponto.y + ponto.h and
            player.y + player.h > ponto.y then
 
-            conta:adicionar(ponto.valor)
+            conta:adicionarResposta(ponto.valor)
             ponto.coletado = true
         end
     end
