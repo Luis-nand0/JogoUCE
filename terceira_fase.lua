@@ -7,14 +7,37 @@ local Coletavel = require("coletavel")
 
 local fase = {}
 local conta
-local background
 
 local spritePortaFechada = love.graphics.newImage("assets/porta_fechada.png")
 local spritePortaAberta = love.graphics.newImage("assets/porta_aberta.png")
 
+-- Função util para gerar valores únicos (distratores)
+local function gerarValoresDistratores(qtd, corretos)
+    local distratores = {}
+    while #distratores < qtd do
+        local valor = love.math.random(1, 20)
+        local duplicado = false
+        for _, c in ipairs(corretos) do
+            if valor == c then
+                duplicado = true
+                break
+            end
+        end
+        for _, d in ipairs(distratores) do
+            if valor == d then
+                duplicado = true
+                break
+            end
+        end
+        if not duplicado then
+            table.insert(distratores, valor)
+        end
+    end
+    return distratores
+end
+
 function fase.load()
-    background = love.graphics.newImage("mapas/fundo3.png")
-    fase.background = background  -- definir background na tabela fase para o draw usar
+    fase.background = love.graphics.newImage("mapas/fundo3.png")
 
     fase.world = bump.newWorld(32)
     fase.map = sti("mapas/terceira_fase.lua", { "bump" })
@@ -23,12 +46,14 @@ function fase.load()
     fase.exits = {}
     fase.pontos = {}
 
+    -- Adiciona colisões das paredes
     for _, obj in ipairs(fase.map.layers["walls"].objects) do
         if obj.properties.collidable then
             fase.world:add(obj, obj.x, obj.y, obj.width, obj.height)
         end
     end
 
+    -- Spawn do jogador
     for _, obj in ipairs(fase.map.layers["spawn"].objects) do
         if obj.name == "playerSpawn" then
             player.load(fase.world, obj.x, obj.y - player.h)
@@ -36,55 +61,59 @@ function fase.load()
         end
     end
 
+    -- Cria a conta e obtém o resultado correto
     conta = Conta.nova()
-    local valor1 = conta.operandos[1]
-    local valor2 = conta.operandos[2]
+    local valorCorreto = conta:getResultado()
+    local corretos = { valorCorreto }
 
-    local pontosMapa = {}
+    -- Calcula quantos pontos existem no mapa
+    local qtdTotal = 0
     for _, obj in ipairs(fase.map.layers["pontos"].objects) do
         if obj.properties.isPoint then
-            table.insert(pontosMapa, obj)
+            qtdTotal = qtdTotal + 1
         end
     end
 
-    for i = #pontosMapa, 2, -1 do
-        local j = love.math.random(1, i)
-        pontosMapa[i], pontosMapa[j] = pontosMapa[j], pontosMapa[i]
+    -- Calcula quantos distratores gerar (total - 1 pois 1 é o correto)
+    local qtdDistratores = math.max(0, qtdTotal - 1)
+    local distratores = gerarValoresDistratores(qtdDistratores, corretos)
+
+    -- Junta o resultado correto e distratores
+    local todosValores = { valorCorreto }
+    for _, v in ipairs(distratores) do
+        table.insert(todosValores, v)
     end
-    
-    local resultado = conta:getResultado()
-    local usados = {}
-    usados[valor1] = true
-    usados[valor2] = true
-    usados[resultado] = true
 
-    local valores = { valor1, valor2, resultado }
+    -- Embaralha os valores para não ficar previsível
+    for i = #todosValores, 2, -1 do
+        local j = love.math.random(i)
+        todosValores[i], todosValores[j] = todosValores[j], todosValores[i]
+    end
 
-    while #valores < #pontosMapa do
-        local aleatorio = love.math.random(1, 20)
-        if not usados[aleatorio] then
-            usados[aleatorio] = true
-            table.insert(valores, aleatorio)
+    -- Cria os coletáveis com os valores nos pontos do mapa
+    local i = 1
+    for _, obj in ipairs(fase.map.layers["pontos"].objects) do
+        if obj.properties.isPoint and i <= #todosValores then
+            local valor = todosValores[i]
+            local c = Coletavel.new(obj.x, obj.y, obj.width, obj.height, valor)
+            table.insert(fase.pontos, c)
+            i = i + 1
         end
     end
 
-    for i, obj in ipairs(pontosMapa) do
-        local valor = valores[i]
-        local c = Coletavel.new(obj.x, obj.y, obj.width, obj.height, valor)
-        table.insert(fase.pontos, c)
-    end
-
+    -- Registra as saídas
     for _, obj in ipairs(fase.map.layers["exits"].objects) do
         if obj.properties.isExit then
             table.insert(fase.exits, {
                 x = obj.x,
                 y = obj.y,
                 w = obj.width,
-                h = obj.height
+                h = obj.height,
             })
         end
     end
 
+    -- Configura a câmera
     local mapWidth = fase.map.width * fase.map.tilewidth
     local mapHeight = fase.map.height * fase.map.tileheight
     local screenWidth, screenHeight = love.graphics.getDimensions()
@@ -95,6 +124,7 @@ function fase.update(dt)
     fase.map:update(dt)
     player.update(dt, fase.world)
 
+    -- Coletar pontos
     for _, ponto in ipairs(fase.pontos) do
         if not ponto.coletado and
            player.x < ponto.x + ponto.w and
@@ -107,15 +137,15 @@ function fase.update(dt)
         end
     end
 
-    if conta:estaCorreta() then
-        for _, exit in ipairs(fase.exits) do
-            if player.x < exit.x + exit.w and
-               player.x + player.w > exit.x and
-               player.y < exit.y + exit.h and
-               player.y + player.h > exit.y then
+    -- Verifica se o player está numa saída e a conta está correta para mudar de fase
+    for _, exit in ipairs(fase.exits) do
+        if player.x < exit.x + exit.w and
+           player.x + player.w > exit.x and
+           player.y < exit.y + exit.h and
+           player.y + player.h > exit.y then
 
+            if conta:estaCorreta() then
                 require("main").mudarFase("quarta_fase")
-                return
             end
         end
     end
@@ -136,16 +166,16 @@ function fase.draw()
         end
     end
 
-    -- Camada de chão
+    -- Camada chão
     fase.map:drawLayer(fase.map.layers["floor"])
 
-    -- Jogador e pontos
+    -- Jogador e coletáveis
     player.draw()
     for _, ponto in ipairs(fase.pontos) do
         ponto:draw()
     end
 
-    -- Saídas com sprites (porta aberta ou fechada)
+    -- Saídas com sprite porta aberta/fechada conforme conta correta
     for _, exit in ipairs(fase.exits) do
         local sprite = conta:estaCorreta() and spritePortaAberta or spritePortaFechada
         love.graphics.draw(sprite, exit.x, exit.y)
